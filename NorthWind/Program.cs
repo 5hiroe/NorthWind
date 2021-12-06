@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using NorthWindLibrary;
 using NorthWindLibrary.Models;
 
 namespace NorthWind
@@ -13,6 +14,7 @@ namespace NorthWind
         static void Main(string[] args)
         {
             var context = new nothwindContext();
+            var gestion = new GestionNorthwind();
             
             //Exercice 1
             Separated("1");
@@ -97,6 +99,15 @@ namespace NorthWind
             {
                 Console.WriteLine(employee.order.Employee.FirstName + " " + employee.order.Employee.LastName);
             }
+
+
+            List<Product> listAdd = new List<Product>();
+            for (int i = 0; i < 5; i++)
+            {
+                listAdd.Add(gestion.SearchProductId(i));
+            }
+            
+            gestion.AddOrder(listAdd);
         }
 
         
