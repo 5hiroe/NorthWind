@@ -34,20 +34,10 @@ namespace NorthWind
             
             //Exercice 3
             Separated("3");
-            var totalProductsSeaFood = context.Products.Select(product => new
-            {
-                product = product,
-                CategoryName = product.Category.CategoryName
-            }).Where(p => p.CategoryName == "Seafood").ToList();
-
-            decimal totalprice = 0;
-            int size = 0;
-            foreach (var product in totalProductsSeaFood)
-            {
-                totalprice += product.product.UnitPrice.Value;
-                size += 1;
-            }
-            Console.WriteLine(totalprice/size + " €");
+            var averageSeaFood = context.Products.Where(p => p.Category.CategoryName == "Seafood")
+                .Average(p => p.UnitPrice);
+            
+            Console.WriteLine("Prix Moyen : " + averageSeaFood + " €");
             
             //Exercice 4
             Separated("4");
@@ -60,52 +50,27 @@ namespace NorthWind
             
             //Exercice 5
             Separated("5");
-            var orders = context.Orders.ToList();
+            var orders = context.Orderdetails.Where(o => o.UnitPrice > 230).Distinct().ToList();
             foreach (var order in orders)
             {
-                var orderPrice = context.Orderdetails.Where(o => o.OrderId == order.OrderId).ToList();
-                decimal price = 0;
-                foreach (var orderdetail in orderPrice)
-                {
-                    price += orderdetail.UnitPrice;
-                }
-
-                if (price > 230)
-                {
-                    Console.WriteLine("Comamnde numéro "+order.OrderId);
-                    price = 0;
-                }
-                price = 0;
+                Console.WriteLine("ID : " + order.OrderId);
             }
+            
             
             //Exercice 6
             Separated("6");
-            var orderedProducts = (from orderdetail in context.Orderdetails
-                join product in context.Products on orderdetail.ProductId equals product.ProductId
+            var totalProductsSeaFood = (from p in context.Set<Product>()
+                from o in context.Set<Orderdetail>().Where(o => p.ProductId == o.ProductId).DefaultIfEmpty()
                 select new
                 {
-                    products = product
-                });
-            var productList = context.Products.ToList();
+                    p, o
+                }).Where(o => o.o == null).ToList();
 
-            bool isSame = false;
-            foreach (var product in productList)
+            foreach (var product in totalProductsSeaFood)
             {
-                foreach (var products in orderedProducts)
-                {
-                    if (product.ProductId == products.products.ProductId)
-                    {
-                        isSame = true;
-                    }
-                }
-
-                if (!isSame)
-                {
-                    Console.WriteLine(product.ProductName + "   " + product.ProductId);
-                }
-
-                isSame = false;
+                Console.WriteLine(product.p.ProductId + "     " + product.p.ProductName);
             }
+             
             
             //Exercice 7
             Separated("7");
