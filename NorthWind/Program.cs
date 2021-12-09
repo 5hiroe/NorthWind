@@ -62,7 +62,9 @@ namespace NorthWind
             //Exercice 6
             Separated("6");
             var totalProductsSeaFood = (from p in context.Set<Product>()
-                from o in context.Set<Orderdetail>().Where(o => p.ProductId == o.ProductId).DefaultIfEmpty()
+                                                from o in context.Set<Orderdetail>()
+                                                    .Where(o => p.ProductId == o.ProductId)
+                                                    .DefaultIfEmpty()
                 select new
                 {
                     p, o
@@ -101,10 +103,18 @@ namespace NorthWind
             }
 
 
+            Separated("AddOrder");
+            
             List<Product> listAdd = new List<Product>();
-            for (int i = 0; i < 5; i++)
+            foreach (var product in gestion.SearchProductsName("Aniseed Syrup"))
             {
-                listAdd.Add(gestion.SearchProductId(i));
+                product.UnitsOnOrder = 1;
+                listAdd.Add(product);
+            }
+            foreach (var product in gestion.SearchProductsName("Queso Manchego La Pastora"))
+            {
+                product.UnitsOnOrder = 2;
+                listAdd.Add(product);
             }
             
             gestion.AddOrder(listAdd);

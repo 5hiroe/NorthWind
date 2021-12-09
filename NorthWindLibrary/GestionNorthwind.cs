@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
@@ -69,16 +70,21 @@ namespace NorthWindLibrary
                 {
                     price = product.UnitPrice.Value;
                 }
+                else
+                {
+                    price = 1;
+                }
                 model.Orderdetails.Add(new Orderdetail
                     {
                         Product = product,
                         Discount = 0.1f,
                         Order = order,
-                        Quantity = 1,
+                        Quantity = product.UnitsOnOrder,
                         UnitPrice = price,
                         OrderId = order.OrderId,
                         ProductId = product.ProductId
                     });
+                Console.WriteLine(product.ProductName + " " + product.UnitsOnOrder);
             }
             model.SaveChanges();
         }
